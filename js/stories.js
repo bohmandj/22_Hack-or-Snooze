@@ -50,3 +50,33 @@ function putStoriesOnPage() {
 
   $allStoriesList.show();
 }
+
+/** Submit new story form on "submit" */
+
+async function submitNewStory(evt) {
+  console.debug("submitNewStory", evt);
+  evt.preventDefault();
+  // harvest form data
+  const title = $("#newstory-title").val();
+  const author = $("#newstory-author").val();
+  const url = $("#newstory-url").val();
+  const username = currentUser.username;
+  const storyData = { title, author, url, username };
+  // make new story
+  const newStory = await storyList.addStory(currentUser, storyData);
+  const newStoryMarkup = generateStoryMarkup(newStory);
+  $allStoriesList.prepend(newStoryMarkup);
+  hideClearNewStoryForm();
+}
+
+$newStoryForm.on("submit", submitNewStory);
+
+/** Hide new story form on click on "cancel" */
+
+function hideClearNewStoryForm(evt) {
+  console.debug("hideClearNewStoryForm", evt);
+  $newStoryForm.trigger("reset");
+  $newStoryForm.hide();
+}
+
+$cancelStoryFormBtn.on("click", hideClearNewStoryForm);

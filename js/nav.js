@@ -25,7 +25,16 @@ function navLoginClick(evt) {
 
 $navLogin.on("click", navLoginClick);
 
-/** When a user first logins in, update the navbar to reflect that. */
+/** Show new story form on click on "submit" */
+
+function navSubmitClick(evt) {
+  console.debug("navSubmitClick", evt);
+  $newStoryForm.show();
+}
+
+$navSubmitStory.on("click", navSubmitClick);
+
+/** When a user first logs in, update the navbar to reflect that. */
 
 function updateNavOnLogin() {
   console.debug("updateNavOnLogin");
