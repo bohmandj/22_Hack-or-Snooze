@@ -45,6 +45,37 @@ a:hover {
 }
 
 
+/* Non-form Pages */
+
+.page {
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+}
+
+.page h4 {
+  padding-left: 18px;
+}
+
+.page>* {
+  margin: 10px 0;
+}
+
+.page label {
+  font-size: 0.9rem;
+  font-weight: 700;
+  display: inline-block;
+  width: 3.5rem;
+  text-align: right;
+  margin-right: 5px;
+}
+
+.page>li {
+  color: gray;
+  font-size: 0.8rem;
+  margin: 10px 0;
+}
+
 /* Forms */
 
 form {
@@ -53,7 +84,7 @@ form {
   margin: 8px 18px 0;
 }
 
-form > * {
+form>* {
   margin: 10px 0;
 }
 
@@ -80,7 +111,7 @@ form input:focus {
   box-shadow: 0 0 4px 1px darkgray;
 }
 
-form > button {
+form>button {
   width: 4rem;
   margin: 5px 0 15px 65px;
   border: none;
@@ -93,11 +124,11 @@ form > button {
   transition: all 0.15s;
 }
 
-form > button:hover {
+form>button:hover {
   background-color: dimgray;
 }
 
-form > hr {
+form>hr {
   margin: 0;
   border: 1px solid lightgray;
 }

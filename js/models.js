@@ -24,8 +24,8 @@ class Story {
   /** Parses hostname out of URL and returns it. */
 
   getHostName() {
-    // UNIMPLEMENTED: complete this function!
-    return "hostname.com";
+    const url = new URL(`${this.url}`)
+    return url.hostname;
   }
 }
 
@@ -78,9 +78,8 @@ class StoryList {
     const response = await axios({
       url: `${BASE_URL}/stories`,
       method: "POST",
-      data: { token, story: { title: `${title}`, author: `${author}`, url: `${url}` } }
+      data: { token, story: { title, author, url } }
     });
-    console.log("response data: ", response.data.story)
     const story = new Story(response.data.story);
     this.stories.unshift(story);
     user.ownStories.unshift(story);
@@ -202,5 +201,66 @@ class User {
       console.error("loginViaStoredCredentials failed", err);
       return null;
     }
+  }
+
+  /******************************************************************************
+   *   Allow logged in user to "favorite" and "unfavorite" a story.
+   *   These stories should remain favorited when page refreshes.
+   */
+
+  /* static async addFavorite(story) {
+    const token = currentUser.loginToken;
+    const username = currentUser.username;
+    const storyId = story.storyId;
+    const response = await axios({
+      url: `${BASE_URL}/users/${username}/favorites/${storyId}`,
+      method: "POST",
+      data: { token }
+    });
+    currentUser.favorites.unshift(story);
+
+    return response;
+  } */
+  /* add story to user's favorites list and update API */
+  async addFavorite(story) {
+    const response = this.favChangeUpdateAPI("add", story);
+    if (response.message === "Favorite Added Successfully!") {
+      this.favorites.unshift(story);
+    } else {
+      alert("Failed to favorite story.")
+    }
+    // need to toggle DOM story class?
+  }
+
+  /*   remove a story from user's favorites list and update API */
+  async removeFavorite(story) {
+    const response = this.favChangeUpdateAPI("remove", story);
+    if (response.message === "Favorite Deleted Successfully!") {
+      this.favorites = this.favorites.filter(fav => fav.storyId !== story.storuId);
+    } else {
+      alert("Failed to unfavorite story.")
+    }
+  }
+
+  /* update API if story is being favorited/unfavorited */
+  static async favChangeUpdateAPI(favStatus, story) {
+    const token = currentUser.loginToken;
+    const username = currentUser.username;
+    const storyId = story.storyId;
+    const method = favStatus === "add" ? "POST" : "DELETE"
+    const response = await axios({
+      url: `${BASE_URL}/users/${username}/favorites/${storyId}`,
+      method: method,
+      data: { token }
+    });
+    return response;
+  }
+
+  /*  Evaluate whether or not a story is already a fav or not 
+  *  (used in the above and when story markup is generated)
+  *  Returns "fav" if story is found in favorites list, "notFav" if not found.
+  */
+  checkFavStatus(story) {
+    return this.favorites.some((fav) => fav.storyId === story.storyId);
   }
 }

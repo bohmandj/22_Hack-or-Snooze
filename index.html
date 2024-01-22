@@ -49,23 +49,32 @@
     </div>
   </nav>
 
+  <!-- Favorited Stories list -->
+  <div id="fav-stories-page" class="page container hidden">
+    <h4>Favorited Stories</h4>
+    <ul id="fav-stories-list"></ul>
+  </div>
+
   <!-- Add New Story form -->
-  <form action="#" id="story-form" class="new-story-form hidden" method="post">
-    <div class="newstory-input">
-      <label for="newstory-author">author</label>
-      <input id="newstory-author" type="text">
-    </div>
-    <div class="newstory-input">
-      <label for="newstory-title">title</label>
-      <input id="newstory-title" type="text">
-    </div>
-    <div class="newstory-input">
-      <label for="newstory-url">url</label>
-      <input id="newstory-url" type="text">
-    </div>
-    <button class="story-button" id="submit-story" type="submit">submit</button>
-    <button class="story-button" id="cancel-story-form" type="button">cancel</button>
-  </form>
+  <section class="account-forms-container container">
+    <form action="#" id="story-form" class="new-story-form hidden" method="post">
+      <h4>Create New Story</h4>
+      <div class="newstory-input">
+        <label for="newstory-author">author</label>
+        <input id="newstory-author" type="text">
+      </div>
+      <div class="newstory-input">
+        <label for="newstory-title">title</label>
+        <input id="newstory-title" type="text">
+      </div>
+      <div class="newstory-input">
+        <label for="newstory-url">url</label>
+        <input id="newstory-url" type="url">
+      </div>
+      <button class="story-button" id="submit-story" type="submit">submit</button>
+      <button class="story-button" id="cancel-story-form" type="button">cancel</button>
+    </form>
+  </section>
 
   <!-- area for stories (all stories, user stories, favorites) -->
   <section class="stories-container container">

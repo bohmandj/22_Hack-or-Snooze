@@ -20,11 +20,15 @@ async function getAndShowStoriesOnStart() {
  */
 
 function generateStoryMarkup(story) {
-  // console.debug("generateStoryMarkup", story);
+  console.debug("generateStoryMarkup", story);
 
+  /***************************************************************
+  put code below for funciton getting delete button (only on "my stories" page)
+  ***************************************************************/
   const hostName = story.getHostName();
   return $(`
       <li id="${story.storyId}">
+      ${showFavoriteStar(story, currentUser)}
         <a href="${story.url}" target="a_blank" class="story-link">
           ${story.title}
         </a>
@@ -71,7 +75,7 @@ async function submitNewStory(evt) {
 
 $newStoryForm.on("submit", submitNewStory);
 
-/** Hide new story form on click on "cancel" */
+/** Hide and clear new story form on click on "cancel" */
 
 function hideClearNewStoryForm(evt) {
   console.debug("hideClearNewStoryForm", evt);
@@ -80,3 +84,50 @@ function hideClearNewStoryForm(evt) {
 }
 
 $cancelStoryFormBtn.on("click", hideClearNewStoryForm);
+
+/***************************************************
+ * Code relating to "Favorites" functionality below:
+ */
+
+// funciton to show favorited stories page, called when favorites nav button is clicked
+function putFavoritesOnPage() {
+  console.debug("putStoriesOnPage");
+
+  $favStoriesList.empty();
+  if (currentUser !== undefined && currentUser.favorites.length === 0) {
+    $favStoriesList.append("<h5>You haven't favorited any stories!</h5>");
+    return
+  }
+  // loop through all of our user's favorited stories and generate HTML for them
+  for (let story of currentUser.favorites) {
+    const $story = generateStoryMarkup(story);
+    $favStoriesPage.append($story);
+  }
+}
+
+
+
+/* models.js has funcitons to:
+  - add story to currentUser.favorites and update API
+  - remove a story from the list of favorites and update API
+  - update API if story is being favorited/unfavorited (used in above)
+  - evaluate whether or not a story is already a fav or not (used in the above and when story markup is generated)
+ */
+
+// handle favorite-star click
+function starClick() {
+
+}
+
+
+// function to determine filled/empty star for favorited/unfavorited story (.toggleClass(class1, class2))
+function showFavoriteStar(story, user) {
+  if (user !== undefined) {
+    if (user.checkFavStatus(story)) {
+      return "<span class='star fav'>&#9733;</span>";
+    } else {
+      return "<span class='star notFav'>&#9734;</span>";
+    }
+  }
+  return "";
+}
