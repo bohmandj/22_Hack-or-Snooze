@@ -85,6 +85,28 @@ class StoryList {
     user.ownStories.unshift(story);
     return story;
   }
+
+  /** Deletes story data from API, removes it from story list.
+   * - user - the current instance of User who will post the story
+   * - obj of {title, author, url}
+   */
+
+  async deleteStory(user, storyId) {
+    const token = user.loginToken;
+    const response = await axios({
+      url: `${BASE_URL}/stories/${storyId}`,
+      method: "DELETE",
+      data: { "token": token }
+    });
+    if (response.status === 200) {
+      storyList.stories = storyList.stories.filter(story => story.storyId !== storyId);
+      user.favorites = user.favorites.filter(story => story.storyId !== storyId);
+      user.ownStories = user.ownStories.filter(story => story.storyId !== storyId);
+    } else {
+      alert("Failed to delete story.")
+    }
+    return response;
+  }
 }
 
 
@@ -208,45 +230,27 @@ class User {
    *   These stories should remain favorited when page refreshes.
    */
 
-  /* static async addFavorite(story) {
-    const token = currentUser.loginToken;
-    const username = currentUser.username;
-    const storyId = story.storyId;
-    const response = await axios({
-      url: `${BASE_URL}/users/${username}/favorites/${storyId}`,
-      method: "POST",
-      data: { token }
-    });
-    currentUser.favorites.unshift(story);
-
-    return response;
-  } */
-  /* add story to user's favorites list and update API */
+  /* Add story to user's favorites list and update API */
   async addFavorite(story) {
     const response = await User.favChangeUpdateAPI("add", story);
     if (response.status === 200) {
-      console.log("fav before add: ", this.favorites);
       this.favorites.unshift(story);
-      console.log("fav after add: ", this.favorites);
     } else {
       alert("Failed to favorite story.")
     }
-    // need to toggle DOM story class?
   }
 
-  /*   remove a story from user's favorites list and update API */
+  /* Remove a story from user's favorites list and update API */
   async removeFavorite(story) {
     const response = await User.favChangeUpdateAPI("remove", story);
     if (response.status === 200) {
-      console.log("fav before remove: ", this.favorites);
       this.favorites = this.favorites.filter(fav => fav.storyId !== story.storyId);
-      console.log("fav after remove: ", this.favorites);
     } else {
       alert("Failed to unfavorite story.")
     }
   }
 
-  /* update API if story is being favorited/unfavorited */
+  /* Update API if story is being favorited/unfavorited */
   static async favChangeUpdateAPI(addOrRemove, story) {
     const token = currentUser.loginToken;
     const username = currentUser.username;
@@ -261,8 +265,7 @@ class User {
   }
 
   /*  Evaluate whether or not a story is already a fav or not 
-  *  (used in the above and when story markup is generated)
-  *  Returns "fav" if story is found in favorites list, "notFav" if not found.
+  *  Returns true if story is found in favorites list, false if not found.
   */
   checkFavStatus(storyId) {
     return this.favorites.some((fav) => fav.storyId === storyId);

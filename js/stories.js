@@ -19,8 +19,8 @@ async function getAndShowStoriesOnStart() {
  * Returns the markup for the story.
  */
 
-function generateStoryMarkup(story) {
-  console.debug("generateStoryMarkup", story);
+function generateStoryMarkup(story, extraIcon) {
+  // console.debug("generateStoryMarkup", story);
 
   /***************************************************************
   put code below for funciton getting delete button (only on "my stories" page)
@@ -28,7 +28,8 @@ function generateStoryMarkup(story) {
   const hostName = story.getHostName();
   return $(`
       <li id="${story.storyId}">
-      ${showFavoriteStar(story, currentUser)}
+        ${showTrashIcon(extraIcon)}
+        ${showFavoriteStar(story, currentUser)}
         <a href="${story.url}" target="a_blank" class="story-link">
           ${story.title}
         </a>
@@ -91,7 +92,7 @@ $cancelStoryFormBtn.on("click", hideClearNewStoryForm);
 
 // funciton to show favorited stories page, called when favorites nav button is clicked
 function putFavoritesOnPage() {
-  console.debug("putStoriesOnPage");
+  console.debug("putFavoriteStoriesOnPage");
 
   $favStoriesList.empty();
   if (currentUser !== undefined && currentUser.favorites.length === 0) {
@@ -113,7 +114,6 @@ function putFavoritesOnPage() {
 function starClick(e) {
   const storyId = e.target.closest("li").id;
   const story = storyList.stories.find((story) => story.storyId === storyId);
-  console.log("e.target: ", e.target);
   if (e.target.classList.contains("fav")) {
     currentUser.removeFavorite(story);
     $(e.target).html("&#9734;")
@@ -122,25 +122,16 @@ function starClick(e) {
     currentUser.addFavorite(story);
     $(e.target).html("&#9733;")
   };
-  // toggleStar(e.target);
   $(e.target).toggleClass("fav notFav");
 }
 
 $(".stories-list").on("click", function (e) {
-  console.log("star.classList: ", e.target.classList);
   if (e.target.classList.contains("star")) {
     starClick(e);
   }
 });
 
-/* function toggleStar(star) {
-  console.log("star.classList: ", star.classList);
-  if (star.classList.contains("fav")) {
-    $(e.target).toggleClass("fav", "notFav");
-  }
-} */
-
-// function to determine filled/empty star for favorited/unfavorited story (.toggleClass(class1, class2))
+// function to determine filled/empty star for favorited/unfavorited story
 function showFavoriteStar(story, user) {
   const storyId = story.storyId
   if (user !== undefined) {
@@ -149,6 +140,55 @@ function showFavoriteStar(story, user) {
     } else {
       return "<span class='star notFav'>&#9734;</span>";
     }
+  }
+  return "";
+}
+
+/***************************************************
+ * Code relating to "My Stories" functionality below:
+ */
+
+// funciton to show user's own stories page, called when "my stories" nav button is clicked
+function putMyStoriesOnPage() {
+  console.debug("putMyStoriesOnPage");
+
+  $myStoriesList.empty();
+  if (currentUser !== undefined && currentUser.ownStories.length === 0) {
+    $myStoriesList.append("<h5>You haven't posted any stories!</h5>");
+    return
+  }
+  // loop through all of our user's own stories and generate HTML for them
+  for (let story of currentUser.ownStories) {
+    const $story = generateStoryMarkup(story, "trash");
+    ($story).appendTo("#my-stories-list");
+  }
+}
+
+/* Handle trash icon click
+* - removes story from currentUser.ownStories and updates API
+*/
+function trashClick(e) {
+  const li = e.target.closest("li");
+  const ul = li.closest("ul");
+  const storyId = li.id;
+  const story = storyList.stories.find((story) => story.storyId === storyId);
+  const isConfirmed = confirm(`Delete "${story.title}" story?\nThis action cannot be undone.`)
+  if (isConfirmed === true) {
+    storyList.deleteStory(currentUser, storyId);
+    ul.removeChild(li);
+  }
+}
+
+$(".stories-list").on("click", function (e) {
+  if (e.target.classList.contains("trash")) {
+    trashClick(e);
+  }
+});
+
+// function to prepend trash icon to stories on "my stories" page
+function showTrashIcon(extraIcon) {
+  if (extraIcon === "trash") {
+    return "<span class='trash'>&#128465;</span>";
   }
   return "";
 }

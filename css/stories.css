@@ -30,7 +30,8 @@
   text-decoration: none;
 }
 
-.star:hover {
+.star:hover,
+.trash:hover {
   cursor: pointer;
 }
 
