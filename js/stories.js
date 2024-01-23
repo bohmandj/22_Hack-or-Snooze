@@ -101,29 +101,50 @@ function putFavoritesOnPage() {
   // loop through all of our user's favorited stories and generate HTML for them
   for (let story of currentUser.favorites) {
     const $story = generateStoryMarkup(story);
-    $favStoriesPage.append($story);
+    ($story).appendTo("#fav-stories-list");
   }
 }
 
-
-
-/* models.js has funcitons to:
-  - add story to currentUser.favorites and update API
-  - remove a story from the list of favorites and update API
-  - update API if story is being favorited/unfavorited (used in above)
-  - evaluate whether or not a story is already a fav or not (used in the above and when story markup is generated)
- */
-
-// handle favorite-star click
-function starClick() {
-
+/* Handle favorite-star click
+* - if star has class "fav", remove story from favorites list and update api
+* - if star has class "notFav", add story to favorites list and update api
+* - changes clicked star to full if empty or to empty if full
+*/
+function starClick(e) {
+  const storyId = e.target.closest("li").id;
+  const story = storyList.stories.find((story) => story.storyId === storyId);
+  console.log("e.target: ", e.target);
+  if (e.target.classList.contains("fav")) {
+    currentUser.removeFavorite(story);
+    $(e.target).html("&#9734;")
+  };
+  if (e.target.classList.contains("notFav")) {
+    currentUser.addFavorite(story);
+    $(e.target).html("&#9733;")
+  };
+  // toggleStar(e.target);
+  $(e.target).toggleClass("fav notFav");
 }
 
+$(".stories-list").on("click", function (e) {
+  console.log("star.classList: ", e.target.classList);
+  if (e.target.classList.contains("star")) {
+    starClick(e);
+  }
+});
+
+/* function toggleStar(star) {
+  console.log("star.classList: ", star.classList);
+  if (star.classList.contains("fav")) {
+    $(e.target).toggleClass("fav", "notFav");
+  }
+} */
 
 // function to determine filled/empty star for favorited/unfavorited story (.toggleClass(class1, class2))
 function showFavoriteStar(story, user) {
+  const storyId = story.storyId
   if (user !== undefined) {
-    if (user.checkFavStatus(story)) {
+    if (user.checkFavStatus(storyId)) {
       return "<span class='star fav'>&#9733;</span>";
     } else {
       return "<span class='star notFav'>&#9734;</span>";

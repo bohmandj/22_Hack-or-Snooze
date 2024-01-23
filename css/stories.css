@@ -30,6 +30,10 @@
   text-decoration: none;
 }
 
+.star:hover {
+  cursor: pointer;
+}
+
 .story-author {
   margin-left: 2em;
 }

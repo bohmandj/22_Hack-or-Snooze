@@ -223,9 +223,11 @@ class User {
   } */
   /* add story to user's favorites list and update API */
   async addFavorite(story) {
-    const response = this.favChangeUpdateAPI("add", story);
-    if (response.message === "Favorite Added Successfully!") {
+    const response = await User.favChangeUpdateAPI("add", story);
+    if (response.status === 200) {
+      console.log("fav before add: ", this.favorites);
       this.favorites.unshift(story);
+      console.log("fav after add: ", this.favorites);
     } else {
       alert("Failed to favorite story.")
     }
@@ -234,20 +236,22 @@ class User {
 
   /*   remove a story from user's favorites list and update API */
   async removeFavorite(story) {
-    const response = this.favChangeUpdateAPI("remove", story);
-    if (response.message === "Favorite Deleted Successfully!") {
-      this.favorites = this.favorites.filter(fav => fav.storyId !== story.storuId);
+    const response = await User.favChangeUpdateAPI("remove", story);
+    if (response.status === 200) {
+      console.log("fav before remove: ", this.favorites);
+      this.favorites = this.favorites.filter(fav => fav.storyId !== story.storyId);
+      console.log("fav after remove: ", this.favorites);
     } else {
       alert("Failed to unfavorite story.")
     }
   }
 
   /* update API if story is being favorited/unfavorited */
-  static async favChangeUpdateAPI(favStatus, story) {
+  static async favChangeUpdateAPI(addOrRemove, story) {
     const token = currentUser.loginToken;
     const username = currentUser.username;
     const storyId = story.storyId;
-    const method = favStatus === "add" ? "POST" : "DELETE"
+    const method = addOrRemove === "add" ? "POST" : "DELETE"
     const response = await axios({
       url: `${BASE_URL}/users/${username}/favorites/${storyId}`,
       method: method,
@@ -260,7 +264,7 @@ class User {
   *  (used in the above and when story markup is generated)
   *  Returns "fav" if story is found in favorites list, "notFav" if not found.
   */
-  checkFavStatus(story) {
-    return this.favorites.some((fav) => fav.storyId === story.storyId);
+  checkFavStatus(storyId) {
+    return this.favorites.some((fav) => fav.storyId === storyId);
   }
 }

@@ -48,8 +48,6 @@ a:hover {
 /* Non-form Pages */
 
 .page {
-  display: flex;
-  flex-direction: column;
   padding: 20px;
 }
 
