@@ -1,7 +1,7 @@
 /* Lists of stories */
 
 .stories-list {
-  margin: 20px 5px;
+  margin: 15px 5px;
 }
 
 .stories-list>li {
@@ -14,6 +14,12 @@
   font-weight: bold;
   font-size: 150%;
   margin: 20px 30px;
+}
+
+hr {
+  background-color: #E5E5E5;
+  height: 1px;
+  border: 0;
 }
 
 
@@ -36,9 +42,13 @@
 }
 
 .story-author {
-  margin-left: 2em;
+  display: block;
+  color: #008100;
+  font-size: 1em;
 }
 
 .story-user {
   display: block;
+  color: #FFA800;
+  font-size: 1em;
 }

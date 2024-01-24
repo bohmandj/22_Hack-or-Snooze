@@ -87,8 +87,10 @@ class StoryList {
   }
 
   /** Deletes story data from API, removes it from story list.
-   * - user - the current instance of User who will post the story
-   * - obj of {title, author, url}
+   * - user - the current instance of User who originally posted the story
+   * - storyId - id code used to look up story
+   * 
+   * returns API response
    */
 
   async deleteStory(user, storyId) {

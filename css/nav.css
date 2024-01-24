@@ -2,9 +2,9 @@
 
 nav {
   display: flex;
-  background-color: #ff6600;
+  background-color: #FF5A20;
   align-items: center;
-  padding: 5px 20px;
+  padding: 25px 20px;
   border-radius: 3px 3px 0 0;
 }
 
